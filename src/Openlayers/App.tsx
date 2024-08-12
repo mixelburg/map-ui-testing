@@ -11,7 +11,8 @@ import { officeCoordsLonLat } from "../util.ts";
 import { useMovingOverlay } from "./useMovingOverlay.ts";
 import { MovingDrone } from "./MovingDrone.tsx";
 import { MovingDronePolyline } from "./MovingDronePolyline.tsx";
-import { useMapZoom } from "./useMapZoom.ts";
+import modelPath from '../assets/a318.glb';
+
 
 const movingDroneCoords = [
   [35.0965, 32.6567],
