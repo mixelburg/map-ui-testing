@@ -88,7 +88,7 @@ export const App = () => {
         }
       });
     }
-  }, [mapState]);
+  }, [mapState, overlay]);
 
   return (
     <>
