@@ -111,9 +111,6 @@ export const MovingDronePolyline = (props: MovingDroneProps) => {
         if (routeLength) {
           distanceRef.current =
             (speed * totalTimeRef.current) / 1e6 / routeLength;
-          console.log("d", {
-            distance: distanceRef.current,
-          });
         }
 
         const currentCoordinate = route.getCoordinateAt(distanceRef.current);

@@ -9,6 +9,7 @@ import { Fill, Icon, Stroke, Style } from "ol/style";
 import { fpsToMs } from "../util.ts";
 import VectorLayer from "ol/layer/Vector";
 import { useMapZoom } from "./useMapZoom.ts";
+import VectorSource from "ol/source/Vector";
 
 const drawPolygonWithMovingDrone = (
   map: Map,
@@ -112,15 +113,19 @@ const drawPolygonWithMovingDrone = (
 
 type MovingDroneProps = {
   map?: Map;
-  layer?: VectorLayer;
   coordinates: Coordinate[];
   hidden?: boolean;
 };
 
 export const MovingDrone = (props: MovingDroneProps) => {
-  const { map, layer, hidden, coordinates } = props;
+  const { map, hidden: forceHidden, coordinates } = props;
   const { zoom } = useMapZoom(props.map);
   const [polygon, setPolygon] = useState<Polygon | null>(null);
+
+  const [_hidden, setHidden] = useState<boolean>(false);
+  const [layer, setLayer] = useState<VectorLayer | null>(null);
+
+  const hidden = forceHidden || _hidden;
 
   const overlay = useMemo(() => {
     const labelElement = document.createElement("div");
@@ -147,10 +152,18 @@ export const MovingDrone = (props: MovingDroneProps) => {
   }, [zoom, overlay, polygon]);
 
   useEffect(() => {
-    if (map && layer && !hidden) {
+    if (map && !hidden) {
+      const vectorSource = new VectorSource({});
+
+      const vectorLayer = new VectorLayer({
+        source: vectorSource,
+      });
+      map.addLayer(vectorLayer);
+      setLayer(vectorLayer);
+
       const { interval, polygon } = drawPolygonWithMovingDrone(
         map,
-        layer,
+        vectorLayer,
         coordinates,
         overlay,
       );
@@ -158,10 +171,25 @@ export const MovingDrone = (props: MovingDroneProps) => {
 
       return () => {
         clearInterval(interval);
-        layer.getSource()?.removeFeature(polygon);
+        map.removeLayer(vectorLayer);
+        setLayer(null);
+        // hide overlay
+        overlay.setPosition(undefined);
       };
     }
-  }, [map, layer, coordinates, hidden]);
+  }, [map, coordinates, hidden, overlay]);
 
-  return <></>;
+  return <>
+    <button
+      style={{
+        position: "absolute",
+        top: 10,
+        left: 40,
+        zIndex: 1000,
+      }}
+      onClick={() => setHidden(ps => !ps)}
+    >
+     toggle drone
+    </button>
+  </>;
 };

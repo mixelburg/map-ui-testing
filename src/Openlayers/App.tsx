@@ -99,11 +99,11 @@ export const App = () => {
         map={mapState?.map}
         coordinates={movingDroneCoords}
       />
-      <MovingDronePolyline
-        layer={mapState?.layer}
-        map={mapState?.map}
-        start={movingDronePolylineCoords}
-      />
+      {/*<MovingDronePolyline*/}
+      {/*  layer={mapState?.layer}*/}
+      {/*  map={mapState?.map}*/}
+      {/*  start={movingDronePolylineCoords}*/}
+      {/*/>*/}
     </>
   );
 };
